@@ -33,7 +33,7 @@ ahe_proc00
 	{
 		c_loop:for(j=0; j<COLS; j++)
 		{
-			int blk_idx = j >> 4; 				// TODO: use log2 for automation (log2<B_COLS>::cvalue);
+			int blk_idx = j >> (6); 				// TODO: use log2 for automation (log2<B_COLS>::cvalue);
 			//
 			pixel_i = src_img_i.read(pix_idx)  ;
 			hist_line[blk_idx][j] =           j;
@@ -68,10 +68,10 @@ ahe_filter
 	int 		i       ;
 	int 		base_idx;
 	HIS_AXIM   *base_adr;
-	HIS_AXIM 	hist_line[(COLS/B_COLS)][4096] ;
+	HIS_AXIM 	hist_line[2][(COLS/B_COLS)][4096] ;
 
-	const int   mem_len = sizeof(hist_line);
-	const int   blk_row = ROWS / B_ROWS    ;
+	const int   mem_len = sizeof(hist_line)/2;
+	const int   blk_row = ROWS / B_ROWS      ;
 
 	//
 	base_idx = 0        ;
@@ -79,12 +79,15 @@ ahe_filter
 	//
 	l_loop:for(i=0; i<blk_row; i++)
 	{
+		ap_uint<1> pr = (i & 0x1);
+		ap_uint<1> wr = (~pr    );
+
 		{
-			printf("memcpy %02d %08x\r\n", i, base_adr);
+			printf("memcpy %02d %08x(%d, %d)\r\n", i, base_adr, mem_len, wr.to_uint());
 		}
 
-		ahe_proc00<ROWS, COLS, B_ROWS, B_COLS>(src_img_i, dst_img_o, hist_line, base_idx);
-		memcpy(base_adr, hist_line, 4096*2*16);
+		ahe_proc00<ROWS, COLS, B_ROWS, B_COLS>(src_img_i, dst_img_o, hist_line[pr], base_idx);
+		memcpy(base_adr, hist_line[wr], mem_len);
 
 		base_idx += (COLS * blk_row);
 		base_adr += mem_len       ;

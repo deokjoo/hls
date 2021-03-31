@@ -38,7 +38,7 @@ ircam04
 	Mat<XF_16UC1, PIC_ROW, PIC_COL, XF_NPPC1> dst_img_o;
 
 	AXIvideo2xfMat(SRC_IMG_I, src_img_i);
-	ahe_filter<PIC_ROW, PIC_COL,16,16>(src_img_i, dst_img_o, SRC_HIS_I, DST_HIS_O);
+	ahe_filter<PIC_ROW, PIC_COL,BLK_SIZ,BLK_SIZ>(src_img_i, dst_img_o, SRC_HIS_I, DST_HIS_O);
 	xfMat2AXIvideo(dst_img_o, DST_IMG_O);
 
     return;

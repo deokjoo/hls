@@ -35,7 +35,8 @@ void ircam04
 //
 //---------------------------------------------------------
 #define 	PIC_COL	640
-#define		PIC_ROW	16
+#define		PIC_ROW	(64*2)
+#define		BLK_SIZ	64
 
 
 #endif
