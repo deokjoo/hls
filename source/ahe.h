@@ -35,9 +35,9 @@ ahe_proc00
 		{
 			int blk_idx = j >> 4; 				// TODO: use log2 for automation (log2<B_COLS>::cvalue);
 			//
-			pixel_i = src_img_i.read(pix_idx) ;
-			hist_line[blk_idx][pixel_i] = j   ;
-			dst_img_o.write(pix_idx, pixel_i) ;
+			pixel_i = src_img_i.read(pix_idx)  ;
+			hist_line[blk_idx][j] =           j;
+			dst_img_o.write(pix_idx, pixel_i)  ;
 			//
 			pix_idx++;
 		}
@@ -84,7 +84,7 @@ ahe_filter
 		}
 
 		ahe_proc00<ROWS, COLS, B_ROWS, B_COLS>(src_img_i, dst_img_o, hist_line, base_idx);
-		memcpy(base_adr, hist_line, 4096);
+		memcpy(base_adr, hist_line, 4096*2*16);
 
 		base_idx += (COLS * blk_row);
 		base_adr += mem_len       ;
