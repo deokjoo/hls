@@ -10,6 +10,6 @@ set_directive_interface -mode m_axi -depth 80960 -latency 100 -offset slave -bun
 set_directive_interface -mode s_axilite "ircam04"
 set_directive_pipeline -II 1 "ahe_proc00/c_loop"
 set_directive_top -name ircam04 "ircam04"
-set_directive_dataflow "ircam04"
 set_directive_array_partition -type complete -dim 1 "ahe_filter" hist_line
-set_directive_dependence -dependent false -type intra "ahe_filter/l_loop"
+set_directive_dependence -type intra -dependent false "ahe_filter/l_loop"
+set_directive_dataflow "ircam04"

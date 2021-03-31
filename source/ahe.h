@@ -67,6 +67,9 @@ ahe_filter
 	//
 	int 		i       ;
 	int 		base_idx;
+	ap_uint<1>  pr      ;
+	ap_uint<1>  wr      ;
+
 	HIS_AXIM   *base_adr;
 	HIS_AXIM 	hist_line[2][(COLS/B_COLS)][4096] ;
 
@@ -77,20 +80,25 @@ ahe_filter
 	base_idx = 0        ;
 	base_adr = DST_HIS_O;
 	//
-	l_loop:for(i=0; i<blk_row; i++)
+	l0_loop:for(i=0; i<blk_row; i++)
 	{
-		ap_uint<1> pr = (i & 0x1);
-		ap_uint<1> wr = (~pr    );
+		pr = (i & 0x1);
+		wr = (~pr    );
 
+		if(i != 0)
 		{
 			printf("memcpy %02d %08x(%d, %d)\r\n", i, base_adr, mem_len, wr.to_uint());
+			memcpy(base_adr, hist_line[wr], mem_len);
 		}
-
 		ahe_proc00<ROWS, COLS, B_ROWS, B_COLS>(src_img_i, dst_img_o, hist_line[pr], base_idx);
-		memcpy(base_adr, hist_line[wr], mem_len);
 
 		base_idx += (COLS * blk_row);
 		base_adr += mem_len       ;
+	}
+	l1_loop:
+	{
+		printf("memcpy %02d %08x(%d, %d)\r\n", i, base_adr, mem_len, wr.to_uint());
+		memcpy(base_adr, hist_line[pr], mem_len);
 	}
 
 	//
